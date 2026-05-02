@@ -96,6 +96,14 @@ npm install
 
 プロジェクト直下に `.env.local` を作成し、Supabase の URL と anon key を設定します。
 
+```bash
+# .env.local
+VITE_SUPABASE_URL=https://your-project.supabase.co
+VITE_SUPABASE_ANON_KEY=your-anon-key
+```
+
+> 🔑 これらの値は [Supabase ダッシュボード](https://app.supabase.com/) の `Project Settings → API` から取得できます。
+
 ### 4. 開発サーバーを起動
 
 ```bash
