@@ -18,8 +18,6 @@
 
 🔗 **[https://my-task-app-seven-ruddy.vercel.app/](https://my-task-app-seven-ruddy.vercel.app/)**
 
-> ※ 上記 URL はダミーです。実際のデプロイ後、自分のものに差し替えてください。
-
 ---
 
 ## ✨ 主な機能
