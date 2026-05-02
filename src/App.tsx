@@ -446,7 +446,7 @@ function TaskItem({
             />
           ) : (
             <div
-              className={`text-[15px] truncate ${
+              className={`text-[15px] break-all ${
                 task.is_completed ? 'line-through text-slate-400' : 'text-slate-800'
               }`}
             >
