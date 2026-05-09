@@ -44,26 +44,17 @@ function Auth() {
       return
     }
 
-    const { data, error } = await supabase.auth.signUp({ email, password })
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: { username: trimmedUsername },
+      },
+    })
     if (error) {
       setMessage({ type: 'error', text: error.message })
       setLoading(false)
       return
-    }
-
-    if (data.user) {
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .insert({ id: data.user.id, username: trimmedUsername })
-
-      if (profileError) {
-        setMessage({
-          type: 'error',
-          text: `アカウントは作成されましたが、プロフィールの保存に失敗しました: ${profileError.message}`,
-        })
-        setLoading(false)
-        return
-      }
     }
 
     if (!data.session) {
