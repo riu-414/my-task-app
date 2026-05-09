@@ -16,9 +16,7 @@
 
 ## 🌐 Live Demo
 
-🔗 **[https://my-task-app-xxxx.vercel.app](https://my-task-app-xxxx.vercel.app)**
-
-> ※ 上記 URL はダミーです。実際のデプロイ後、自分のものに差し替えてください。
+🔗 **[https://my-task-app-seven-ruddy.vercel.app/](https://my-task-app-seven-ruddy.vercel.app/)**
 
 ---
 
