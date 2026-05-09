@@ -7,6 +7,7 @@ import {
   Circle,
   ListTodo,
   LogOut,
+  MailCheck,
   Pencil,
   Plus,
   Sparkles,
@@ -17,6 +18,14 @@ import {
 } from 'lucide-react'
 import { supabase, type Task, type TaskWithProfile } from './supabaseClient'
 
+const getSiteUrl = () => {
+  const fromEnv = import.meta.env.VITE_SITE_URL as string | undefined
+  if (fromEnv && fromEnv.length > 0) {
+    return fromEnv.replace(/\/$/, '')
+  }
+  return window.location.origin
+}
+
 function Auth() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -24,6 +33,13 @@ function Auth() {
   const [mode, setMode] = useState<'login' | 'signup'>('login')
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState<{ type: 'error' | 'info'; text: string } | null>(null)
+  const [signupSentTo, setSignupSentTo] = useState<string | null>(null)
+
+  const switchMode = (next: 'login' | 'signup') => {
+    setMode(next)
+    setMessage(null)
+    setSignupSentTo(null)
+  }
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
@@ -44,11 +60,12 @@ function Auth() {
       return
     }
 
-    const { data, error } = await supabase.auth.signUp({
+    const { error } = await supabase.auth.signUp({
       email,
       password,
       options: {
         data: { username: trimmedUsername },
+        emailRedirectTo: getSiteUrl(),
       },
     })
     if (error) {
@@ -57,12 +74,7 @@ function Auth() {
       return
     }
 
-    if (!data.session) {
-      setMessage({
-        type: 'info',
-        text: '確認メールを送信しました。メールを確認してアカウントを有効化してください。',
-      })
-    }
+    setSignupSentTo(email)
     setLoading(false)
   }
 
@@ -77,6 +89,35 @@ function Auth() {
         </div>
 
         <div className="bg-white rounded-2xl shadow-xl shadow-slate-200/60 border border-slate-100 p-6 sm:p-8">
+          {signupSentTo ? (
+            <div className="text-center">
+              <div className="w-14 h-14 mx-auto mb-4 rounded-2xl bg-emerald-50 flex items-center justify-center">
+                <MailCheck size={28} className="text-emerald-600" />
+              </div>
+              <h1 className="text-2xl font-bold text-slate-800 mb-2">
+                確認メールを送信しました
+              </h1>
+              <p className="text-sm text-slate-600 leading-relaxed mb-1">
+                <span className="font-semibold text-slate-800 break-all">
+                  {signupSentTo}
+                </span>{' '}
+                宛に確認メールをお送りしました。
+              </p>
+              <p className="text-sm text-slate-500 leading-relaxed mb-6">
+                メール内のリンクをクリックしてアカウントを有効化してください。
+                <br />
+                有効化後、ログイン画面からサインインできます。
+              </p>
+              <button
+                type="button"
+                onClick={() => switchMode('login')}
+                className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-medium py-2.5 rounded-xl shadow-lg shadow-indigo-500/30 transition-all"
+              >
+                ログイン画面へ戻る
+              </button>
+            </div>
+          ) : (
+            <>
           <h1 className="text-2xl font-bold text-slate-800 mb-1">
             {mode === 'login' ? 'おかえりなさい' : 'はじめまして'}
           </h1>
@@ -164,15 +205,14 @@ function Auth() {
               : 'すでにアカウントをお持ちの方は'}
             <button
               type="button"
-              onClick={() => {
-                setMode(mode === 'login' ? 'signup' : 'login')
-                setMessage(null)
-              }}
+              onClick={() => switchMode(mode === 'login' ? 'signup' : 'login')}
               className="ml-1 text-indigo-600 hover:text-indigo-700 font-semibold"
             >
               {mode === 'login' ? 'サインアップ' : 'ログイン'}
             </button>
           </div>
+            </>
+          )}
         </div>
       </div>
     </div>
